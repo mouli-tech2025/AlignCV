@@ -6,6 +6,7 @@ from service.pdf_extractor import extract_text
 from service.info_extractor import extract_resume_info
 from service.skills_dictionary import find_skills
 from service.matcher import calculate_match
+from service.insights import build_insights
 from utils.errors import AppError
 from utils.validators import validate_job_description, validate_resume_file
 
@@ -30,11 +31,15 @@ def analyze():
     job_description = validate_job_description(request.form.get("job_description"))
     resume_text = extract_text(file_bytes)
 
+
     info = extract_resume_info(resume_text)
     jd_skills = find_skills(job_description)
     match = calculate_match(resume_text, job_description, info["skills"], jd_skills)
+    insights = build_insights(info, match)
 
-    return jsonify(success=True, match=match, info=info, jd_skills=jd_skills)
+    return jsonify(
+        success=True, match=match, info=info, jd_skills=jd_skills, insights=insights
+    )
 
 
 @app.errorhandler(AppError)

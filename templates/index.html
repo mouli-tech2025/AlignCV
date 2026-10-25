@@ -49,11 +49,75 @@
 
       <button type="submit" id="analyze-btn" class="btn-primary">Analyze Resume</button>
     </form>
-    <pre id="debug-output" class="debug-output hidden"></pre>
+    <section id="results" class="results hidden" aria-live="polite">
+      <h2 class="results-title">Your Analysis</h2>
+
+      <div class="score-row">
+        <div class="card score-card">
+          <div class="gauge">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="gauge-track" cx="60" cy="60" r="54"></circle>
+              <circle id="gauge-fill" class="gauge-fill" cx="60" cy="60" r="54"></circle>
+            </svg>
+            <div class="gauge-text"><span id="score-value">0</span><small>%</small></div>
+          </div>
+          <span id="score-label" class="badge"></span>
+          <p id="score-note" class="muted"></p>
+        </div>
+
+        <div class="card stats-card">
+          <div class="stat"><strong id="stat-matched">0</strong><span>Skills matched</span></div>
+          <div class="stat"><strong id="stat-missing">0</strong><span>Skills missing</span></div>
+          <div class="stat"><strong id="stat-found">0</strong><span>Skills in your resume</span></div>
+          <div class="stat"><strong id="stat-similarity">0%</strong><span>Text similarity</span></div>
+        </div>
+      </div>
+
+      <div class="results-grid">
+        <div class="card">
+          <h3>✅ Matched skills</h3>
+          <div id="matched-skills" class="chips"></div>
+        </div>
+        <div class="card">
+          <h3>⚠️ Missing skills</h3>
+          <div id="missing-skills" class="chips"></div>
+        </div>
+
+        <div class="card">
+          <h3>💪 Strengths</h3>
+          <ul id="strengths-list" class="insight-list good"></ul>
+        </div>
+        <div class="card">
+          <h3>🛠️ Areas for improvement</h3>
+          <ul id="improvements-list" class="insight-list improve"></ul>
+        </div>
+
+        <div class="card">
+          <h3>📊 Skill coverage</h3>
+          <div class="chart-wrap"><canvas id="skills-chart"></canvas></div>
+          <p id="chart-note" class="muted hidden"></p>
+        </div>
+        <div class="card">
+          <h3>🔍 Skills in your resume</h3>
+          <p class="muted small">Green chips also appear in the job description.</p>
+          <div id="resume-skills"></div>
+        </div>
+
+        <div class="card wide">
+          <h3>📋 Resume sections detected</h3>
+          <details open><summary>🎓 Education</summary><div id="detail-education" class="detail-body"></div></details>
+          <details><summary>💼 Experience and internships</summary><div id="detail-experience" class="detail-body"></div></details>
+          <details><summary>🚀 Projects</summary><div id="detail-projects" class="detail-body"></div></details>
+          <details><summary>🏅 Certifications</summary><div id="detail-certifications" class="detail-body"></div></details>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">AlignCV · Built by Mouli Biswas . 2026</footer>
 
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

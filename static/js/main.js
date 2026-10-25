@@ -2,7 +2,6 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const MIN_JD_LENGTH = 50;
 
 const analyzeBtn = document.getElementById("analyze-btn");
-const debugOutput = document.getElementById("debug-output");
 const form = document.getElementById("analyze-form");
 const dropZone = document.getElementById("drop-zone");
 const fileInput = document.getElementById("resume-input");
@@ -93,7 +92,6 @@ function setLoading(isLoading) {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideAlert();
-  debugOutput.classList.add("hidden");
 
   if (!selectedFile) {
     showAlert("Please upload your resume as a PDF.");
@@ -110,6 +108,7 @@ form.addEventListener("submit", async (e) => {
   formData.append("resume", selectedFile);
   formData.append("job_description", jd);
 
+  AlignDashboard.hide();
   setLoading(true);
   try {
     const response = await fetch("/api/analyze", { method: "POST", body: formData });
@@ -120,12 +119,11 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
-    // Temporary: show the raw result. The real dashboard comes in Stage 6.
-    debugOutput.textContent = JSON.stringify(data, null, 2);
-    debugOutput.classList.remove("hidden");
+    AlignDashboard.render(data);
   } catch (err) {
     showAlert("Could not reach the server. Please check your connection and try again.");
   } finally {
     setLoading(false);
   }
 });
+
