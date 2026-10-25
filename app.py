@@ -3,6 +3,8 @@ from werkzeug.exceptions import HTTPException
 
 from config import MAX_UPLOAD_BYTES, MAX_UPLOAD_MB
 from service.pdf_extractor import extract_text
+from service.info_extractor import extract_resume_info
+from service.skills_dictionary import find_skills
 from utils.errors import AppError
 from utils.validators import validate_job_description, validate_resume_file
 
@@ -27,12 +29,12 @@ def analyze():
     job_description = validate_job_description(request.form.get("job_description"))
     resume_text = extract_text(file_bytes)
 
-    # Temporary response for testing. Later stages add the real analysis.
+        # Temporary response for testing. Stage 5 adds the match score.
     return jsonify(
         success=True,
         resume_length=len(resume_text),
-        job_description_length=len(job_description),
-        resume_preview=resume_text[:600],
+        info=extract_resume_info(resume_text),
+        jd_skills=find_skills(job_description),
     )
 
 
