@@ -52,3 +52,4 @@ def test_extract_resume_info():
     assert info["projects"][0]["title"] == "AlignCV"
     assert info["contact"]["email"] is True
     assert info["contact"]["phone"] is True
+    

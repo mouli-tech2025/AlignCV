@@ -160,23 +160,47 @@ def extract_experience(lines: list[str], full_text: str) -> dict:
         "has_internship": bool(INTERNSHIP_PATTERN.search(full_text)),
     }
 
+ACTION_VERBS = {
+    "built", "developed", "worked", "collaborated", "designed", "implemented",
+    "created", "integrated", "engineered", "led", "managed", "used", "utilized",
+    "deployed", "contributed", "improved", "optimized", "trained", "analyzed",
+    "automated", "tested", "wrote", "processed", "achieved",
+}
+# Lines like "Programming Languages: C, Java" belong to Skills, not Projects
+SKILL_LABEL_LINE = re.compile(
+    r"^(?:programming|languages?|libraries|frameworks?|tools?|frontend|backend|"
+    r"databases?|ai|ml|technologies|platforms?|cloud|devops|soft skills|core)\b[^:]{0,40}:",
+    re.IGNORECASE,
+)
+
+
+def _is_project_title(line: str) -> bool:
+    """A title is short, has no sentence punctuation, and isn't a tech-stack
+    line ("A | B | C"), a "Label: value" line, or a sentence starting with a verb."""
+    if len(line) > 90 or line.endswith((".", ",", ";")):
+        return False
+    if "|" in line or ":" in line:
+        return False
+    return line.split()[0].lower().strip(",.") not in ACTION_VERBS
 
 def extract_projects(lines: list[str]) -> list[dict]:
-    """Group lines into projects: a short non-bullet line starts a new project."""
-    has_titles = any(not _is_bullet(line) and len(line) <= 100 for line in lines)
+    """Group lines into projects: a title line starts a new project, and the
+    lines after it (bullets, tech stack, sentences) become its description."""
+    has_titles = any(not _is_bullet(line) and _is_project_title(line) for line in lines)
     projects = []
 
     for line in lines:
-        if _is_bullet(line):
-            text = _strip_bullet(line)
-            if not has_titles:
-                projects.append({"title": text[:80], "description": text})
-            elif projects:
+        if SKILL_LABEL_LINE.match(line):
+            continue
+        text = _strip_bullet(line)
+
+        if _is_bullet(line) or not _is_project_title(line):
+            if has_titles and projects:
                 projects[-1]["description"] = f"{projects[-1]['description']} {text}".strip()
-        elif len(line) <= 100:
-            projects.append({"title": line, "description": ""})
-        elif projects:
-            projects[-1]["description"] = f"{projects[-1]['description']} {line}".strip()
+            elif not has_titles:
+                projects.append({"title": text[:80], "description": text})
+        else:
+            projects.append({"title": text, "description": ""})
 
     return [
         {"title": p["title"], "description": p["description"][:400]}
