@@ -1,6 +1,8 @@
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const MIN_JD_LENGTH = 50;
 
+const analyzeBtn = document.getElementById("analyze-btn");
+const debugOutput = document.getElementById("debug-output");
 const form = document.getElementById("analyze-form");
 const dropZone = document.getElementById("drop-zone");
 const fileInput = document.getElementById("resume-input");
@@ -83,9 +85,15 @@ jdInput.addEventListener("input", () => {
 });
 
 // ---------- Submit ----------
-form.addEventListener("submit", (e) => {
+function setLoading(isLoading) {
+  analyzeBtn.disabled = isLoading;
+  analyzeBtn.textContent = isLoading ? "Analyzing..." : "Analyze Resume";
+}
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideAlert();
+  debugOutput.classList.add("hidden");
 
   if (!selectedFile) {
     showAlert("Please upload your resume as a PDF.");
@@ -98,7 +106,26 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
-  // Stage 3 will send this to the backend
-  console.log("Valid input:", selectedFile.name, jd.length, "characters");
-  alert("Validation passed! Backend connection comes in Stage 3.");
+  const formData = new FormData();
+  formData.append("resume", selectedFile);
+  formData.append("job_description", jd);
+
+  setLoading(true);
+  try {
+    const response = await fetch("/api/analyze", { method: "POST", body: formData });
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      showAlert(data.error || "Something went wrong. Please try again.");
+      return;
+    }
+
+    // Temporary: show the raw result. The real dashboard comes in Stage 6.
+    debugOutput.textContent = JSON.stringify(data, null, 2);
+    debugOutput.classList.remove("hidden");
+  } catch (err) {
+    showAlert("Could not reach the server. Please check your connection and try again.");
+  } finally {
+    setLoading(false);
+  }
 });

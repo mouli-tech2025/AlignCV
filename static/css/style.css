@@ -132,6 +132,17 @@ textarea:focus { outline: 2px solid var(--blue); border-color: transparent; }
 
 .footer { text-align: center; padding: 2rem; color: var(--muted); font-size: .9rem; }
 
+.debug-output {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #111827;
+  color: #d1fae5;
+  border-radius: 10px;
+  font-size: .85rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
 /* Mobile */
 @media (max-width: 720px) {
   .card-grid { grid-template-columns: 1fr; }
