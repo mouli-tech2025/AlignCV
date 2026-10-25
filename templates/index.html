@@ -1,14 +1,58 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlignCV</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlignCV | Align your resume with the job you want</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>AlignCV is running!</h1>
-    <p>Your resume analyzer is ready to build.</p>
+
+  <header class="header">
+    <div class="logo">Align<span>CV</span></div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Align your resume with the job you want</h1>
+      <p>Upload your resume, paste a job description, and get an instant match score with AI-powered suggestions.</p>
+    </section>
+
+    <div id="alert" class="alert hidden" role="alert" aria-live="polite"></div>
+
+    <form id="analyze-form" class="card-grid" novalidate>
+
+      <!-- Resume upload -->
+      <div class="card">
+        <h2>1. Upload Resume</h2>
+        <label id="drop-zone" class="drop-zone" for="resume-input">
+          <div class="drop-icon">📄</div>
+          <p><strong>Click to upload</strong> or drag and drop</p>
+          <small>PDF only, max 5 MB</small>
+          <input type="file" id="resume-input" accept="application/pdf,.pdf" hidden>
+        </label>
+
+        <div id="file-info" class="file-info hidden">
+          <span id="file-name"></span>
+          <button type="button" id="remove-file" aria-label="Remove file">✕</button>
+        </div>
+      </div>
+
+      <!-- Job description -->
+      <div class="card">
+        <h2>2. Job Description</h2>
+        <textarea id="jd-input" placeholder="Paste the job description here..." maxlength="10000"></textarea>
+        <small id="char-count">0 / 10000</small>
+      </div>
+
+      <button type="submit" id="analyze-btn" class="btn-primary">Analyze Resume</button>
+    </form>
+  </main>
+
+  <footer class="footer">AlignCV · Built by Mouli Biswas</footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
