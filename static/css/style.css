@@ -132,11 +132,36 @@ textarea:focus { outline: 2px solid var(--blue); border-color: transparent; }
 
 .footer { text-align: center; padding: 2rem; color: var(--muted); font-size: .9rem; }
 
+/* ---------- AI suggestions ---------- */
+.ai-card h4 { margin: 1.25rem 0 .6rem; font-size: .9rem; }
+.ai-summary { font-size: .98rem; }
+.ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.ai-error {
+  padding: .8rem 1rem;
+  background: #fff6e0;
+  color: #8a5a00;
+  border-radius: 10px;
+  margin-bottom: .75rem;
+}
+.insight-list.arrow li::before { content: "→"; color: var(--blue); }
 
+.bullet-pair {
+  padding: .8rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: .6rem;
+}
+.bullet-before { color: var(--muted); text-decoration: line-through; font-size: .9rem; }
+.bullet-after { color: #1e7e34; margin-top: .3rem; font-weight: 500; }
 
 /* Mobile */
 @media (max-width: 720px) {
-  .card-grid { grid-template-columns: 1fr; }
+  .card-grid,
+  .score-row,
+  .results-grid,
+  .ai-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---------- Results dashboard ---------- */

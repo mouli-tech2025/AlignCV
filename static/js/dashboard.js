@@ -161,9 +161,44 @@ const AlignDashboard = (() => {
     );
   }
 
+    // ---------- AI suggestions ----------
+  function renderAI(ai, aiError) {
+    const errorBox = $("ai-error");
+    const body = $("ai-body");
+
+    errorBox.classList.toggle("hidden", !aiError);
+    body.classList.toggle("hidden", !ai);
+    if (aiError) errorBox.textContent = aiError;
+    if (!ai) return;
+
+    $("ai-summary").textContent = ai.summary;
+    renderList($("ai-improvements"), ai.improvement_suggestions);
+
+    $("ai-skills").replaceChildren(
+      ...ai.skills_to_add.map((item) => {
+        const li = make("li");
+        li.append(make("strong", "", item.skill));
+        if (item.how) li.append(document.createTextNode(`: ${item.how}`));
+        return li;
+      })
+    );
+
+    const bullets = ai.rewritten_bullets.map((pair) => {
+      const box = make("div", "bullet-pair");
+      box.append(make("p", "bullet-before", pair.original));
+      box.append(make("p", "bullet-after", pair.improved));
+      return box;
+    });
+    $("ai-bullets").replaceChildren(
+      ...(bullets.length ? bullets : [make("p", "muted", "No bullet rewrites suggested.")])
+    );
+
+    renderChips($("ai-keywords"), ai.keywords_to_include, "", "No extra keywords suggested.");
+  }
+
   // ---------- Public API ----------
-  function render(data) {
-    const { match, info, insights } = data;
+    function render(data) {
+    const { match, info, insights, ai, ai_error: aiError } = data;
     const matchedSet = new Set(match.skills.matched.map((s) => s.toLowerCase()));
     const resumeSkillCount =
       Object.values(info.skills.technical).flat().length + info.skills.soft.length;
@@ -185,6 +220,7 @@ const AlignDashboard = (() => {
     renderList($("improvements-list"), insights.improvements);
     renderResumeSkills(info.skills, matchedSet);
     renderSections(info);
+    renderAI(ai, aiError);
     renderChart(match.skills.matched.length, match.skills.missing.length);
 
     const results = $("results");

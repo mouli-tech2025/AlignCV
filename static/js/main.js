@@ -120,10 +120,12 @@ form.addEventListener("submit", async (e) => {
     }
 
     AlignDashboard.render(data);
-  } catch (err) {
+    } catch (err) {
+    console.error("Analyze failed:", err);
     showAlert("Could not reach the server. Please check your connection and try again.");
   } finally {
     setLoading(false);
+    analyzeBtn.textContent = isLoading ? "Analyzing... this can take up to 20 seconds" : "Analyze Resume";
   }
 });
 

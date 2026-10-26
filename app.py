@@ -7,6 +7,7 @@ from service.info_extractor import extract_resume_info
 from service.skills_dictionary import find_skills
 from service.matcher import calculate_match
 from service.insights import build_insights
+from service.ai_suggestions import AIServiceError, generate_suggestions
 from utils.errors import AppError
 from utils.validators import validate_job_description, validate_resume_file
 
@@ -37,8 +38,20 @@ def analyze():
     match = calculate_match(resume_text, job_description, info["skills"], jd_skills)
     insights = build_insights(info, match)
 
+    try:
+        ai = generate_suggestions(resume_text, job_description, match)
+        ai_error = None
+    except AIServiceError as err:
+        ai, ai_error = None, str(err)
+
     return jsonify(
-        success=True, match=match, info=info, jd_skills=jd_skills, insights=insights
+        success=True,
+        match=match,
+        info=info,
+        jd_skills=jd_skills,
+        insights=insights,
+        ai=ai,
+        ai_error=ai_error,
     )
 
 
