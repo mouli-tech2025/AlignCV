@@ -913,7 +913,15 @@ textarea:focus {
    ================================================================ */
 .results { position: relative; z-index: 1; }
 
-.results-header { margin-bottom: 1.4rem; }
+.results-header {
+  margin-bottom: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 .results-title {
   font-size: 1.4rem; font-weight: 700; color: var(--text-dark);
   display: flex; align-items: center; gap: 0.6rem;
@@ -3336,4 +3344,463 @@ body.dark .clay-icon--coral {
 
 body.dark .clay-icon--pink {
     color: #ee91c5;
+}
+
+/* ================================================================
+   RESULT ACTION BUTTONS (Download / PDF / Save to history)
+   ================================================================ */
+.result-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-btn);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dark);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.18s var(--ease-clay);
+  box-shadow: 4px 6px 14px rgba(140,115,205,0.14), -3px -3px 8px rgba(255,255,255,0.88);
+}
+.btn-action:hover {
+  background: var(--lavender-bg);
+  box-shadow: 5px 8px 18px rgba(140,115,205,0.22), -3px -3px 8px rgba(255,255,255,0.92);
+  transform: translateY(-1px);
+}
+.btn-action:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-pressed);
+}
+.btn-save-history {
+  background: var(--lavender-bg);
+  color: var(--primary);
+  border-color: var(--lavender);
+}
+.btn-save-history:disabled {
+  background: var(--mint-bg);
+  color: var(--mint-deep);
+  border-color: var(--mint);
+  cursor: default;
+  transform: none;
+}
+
+/* History button in header */
+.btn-history-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-btn);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dark);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.18s var(--ease-clay);
+  box-shadow: 3px 4px 10px rgba(140,115,205,0.12), -2px -2px 6px rgba(255,255,255,0.85);
+  white-space: nowrap;
+}
+.btn-history-header:hover {
+  background: var(--lavender-bg);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* ================================================================
+   "VIEWING SAVED ANALYSIS" BANNER
+   ================================================================ */
+.history-viewing-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--lavender-bg);
+  color: var(--primary-dark);
+  border: 1.5px solid var(--lavender);
+  border-radius: var(--radius-tile);
+  padding: 0.7rem 1.1rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+}
+.history-viewing-banner.hidden { display: none !important; }
+
+.history-banner-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--primary);
+  padding: 0 0.2rem;
+  flex-shrink: 0;
+  font-weight: 700;
+  transition: transform 0.15s;
+}
+.history-banner-close:hover { transform: scale(1.2); }
+
+/* ================================================================
+   HISTORY DRAWER + OVERLAY
+   ================================================================ */
+.history-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 27, 75, 0.35);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 200;
+  transition: opacity 0.2s;
+}
+.history-overlay.hidden { display: none !important; }
+
+.history-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  max-width: 100vw;
+  height: 100vh;
+  background: var(--surface-3);
+  box-shadow: -8px 0 40px rgba(108, 79, 214, 0.2);
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  border-left: 1.5px solid var(--border);
+  overflow: hidden;
+}
+.history-drawer.hidden { display: none !important; }
+
+@media (max-width: 480px) {
+  .history-drawer { width: 100vw; }
+}
+
+.history-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.4rem 0.9rem;
+  border-bottom: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+.history-drawer-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.history-close-btn {
+  background: var(--surface-2);
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: background 0.15s, transform 0.15s;
+}
+.history-close-btn:hover {
+  background: var(--peach-bg);
+  color: var(--peach-deep);
+  transform: rotate(90deg);
+}
+
+.history-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.55rem 1.4rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.history-storage-error {
+  background: var(--peach-bg);
+  color: var(--peach-deep);
+  font-size: 0.8rem;
+  padding: 0.6rem 1.4rem;
+  border-bottom: 1px solid var(--peach);
+  flex-shrink: 0;
+}
+.history-storage-error.hidden { display: none !important; }
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.history-empty {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.history-card {
+  background: var(--surface);
+  border-radius: var(--radius-tile);
+  border: 1.5px solid var(--border);
+  padding: 0.9rem 1rem;
+  box-shadow: 6px 8px 20px rgba(140,115,205,0.10), -4px -4px 12px rgba(255,255,255,0.85);
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.history-card:hover {
+  box-shadow: 8px 10px 24px rgba(140,115,205,0.18), -4px -4px 14px rgba(255,255,255,0.92);
+  transform: translateY(-1px);
+}
+
+.history-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.history-score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 28px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0 0.55rem;
+  flex-shrink: 0;
+}
+
+.history-label-text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.history-meta {
+  margin-left: auto;
+}
+
+.history-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.history-filename {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-jd-snippet {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.7rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.history-card-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.history-action-btn {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-dark);
+  font-family: inherit;
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.history-action-btn:hover { transform: translateY(-1px); }
+.history-view-btn:hover { background: var(--lavender-bg); color: var(--primary); }
+.history-dl-btn:hover   { background: var(--mint-bg); color: var(--mint-deep); }
+.history-del-btn:hover  { background: var(--peach-bg); color: var(--peach-deep); }
+
+.history-drawer-footer {
+  padding: 0.9rem 1.4rem;
+  border-top: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+.history-clear-btn {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.history-clear-btn:hover {
+  background: var(--peach-bg);
+  color: var(--peach-deep);
+  border-color: var(--peach);
+}
+.history-clear-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ================================================================
+   DARK MODE — NEW ELEMENTS
+   ================================================================ */
+body.dark .btn-action {
+  background: var(--surface-2);
+  border-color: rgba(110,90,190,0.30);
+  color: var(--text-dark);
+}
+body.dark .btn-save-history {
+  background: var(--lavender-bg);
+  color: var(--primary-light);
+}
+body.dark .btn-save-history:disabled {
+  background: var(--mint-bg);
+  color: #48c9a0;
+}
+body.dark .btn-history-header {
+  background: var(--surface-2);
+  border-color: rgba(110,90,190,0.30);
+  color: var(--text-dark);
+}
+body.dark .history-drawer {
+  background: var(--surface-3);
+  border-color: rgba(110,90,190,0.22);
+}
+body.dark .history-card {
+  background: var(--surface-2);
+  border-color: rgba(110,90,190,0.22);
+}
+body.dark .history-action-btn {
+  background: var(--surface);
+  border-color: rgba(110,90,190,0.22);
+}
+body.dark .history-viewing-banner {
+  background: var(--lavender-bg);
+  color: var(--primary-light);
+}
+
+/* ================================================================
+   PRINT STYLES  (@media print — "Save as PDF")
+   ================================================================ */
+@media print {
+  /* Hide everything except results */
+  .header,
+  .hero,
+  .upload-section,
+  .footer,
+  .sidebar,
+  .sidebar-reopen-btn,
+  .sidebar-backdrop,
+  .bg-blob,
+  .result-actions,
+  #result-actions,
+  .ai-footer,
+  .history-drawer,
+  .history-overlay,
+  .history-viewing-banner,
+  #alert,
+  #dark-mode-btn,
+  #history-open-btn,
+  .btn-report,
+  #view-report-btn {
+    display: none !important;
+  }
+
+  /* Layout reset for print */
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 11pt;
+  }
+
+  .page-layout {
+    display: block !important;
+  }
+
+  .main-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .results {
+    display: block !important;
+  }
+
+  .results-header {
+    margin-bottom: 0.75rem;
+  }
+
+  /* Single-column grid */
+  .results-grid,
+  .score-row {
+    display: block !important;
+  }
+
+  /* Cards */
+  .card {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 1rem !important;
+    border-radius: 8px !important;
+  }
+
+  .score-card,
+  .stats-card {
+    margin-bottom: 0.75rem;
+  }
+
+  /* Open all details for print (handled via JS beforeprint too) */
+  details { display: block !important; }
+  details > summary { display: block; font-weight: bold; }
+
+  /* Chips */
+  .chip {
+    border: 1px solid #ccc !important;
+    background: #f5f5f5 !important;
+    color: #111 !important;
+  }
+
+  /* Hide gauge SVG animation artifacts */
+  .gauge svg { display: none; }
 }

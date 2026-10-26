@@ -1,10 +1,12 @@
 // ================================================================
-//  AlignCV – main.js  (Round 2)
+//  AlignCV – main.js
 //  All fetch / validation / form logic preserved exactly.
-//  Visual additions only:
-//    – Dark mode toggle (uses existing key "aligncv-dark")
+//  Additions:
+//    – Tracks latest result + meta for report/history buttons
+//    – Wires up Download report, Save to history, Save as PDF buttons
+//    – Dark mode toggle
 //    – Loading spinner class toggle
-//    – Sidebar open/close toggle (localStorage key "alignCvSidebar")
+//    – Sidebar open/close toggle
 //    – Sidebar active nav state
 //    – SVG gradient injection for gauge ring
 // ================================================================
@@ -24,6 +26,10 @@ const charCount  = document.getElementById("char-count");
 const alertBox   = document.getElementById("alert");
 
 let selectedFile = null;
+
+// Latest analysis state (kept in memory, not persisted)
+let latestData = null;
+let latestMeta = null;
 
 // ---- Alerts ----
 function showAlert(message) {
@@ -97,9 +103,23 @@ function setLoading(isLoading) {
   const btnText    = analyzeBtn.querySelector(".btn-text");
   const btnIcon    = analyzeBtn.querySelector(".btn-icon");
   const btnSpinner = analyzeBtn.querySelector(".btn-spinner");
-  if (btnText)    btnText.textContent = isLoading ? "Analyzing…" : "Analyze Resume";
+  if (btnText)    btnText.textContent = isLoading ? "Analyzing\u2026" : "Analyze Resume";
   if (btnIcon)    btnIcon.classList.toggle("hidden", isLoading);
   if (btnSpinner) btnSpinner.classList.toggle("hidden", !isLoading);
+}
+
+// ---- Reset Save button (called when a new analysis starts) ----
+function resetSaveBtn() {
+  const saveBtn = document.getElementById("save-history-btn");
+  if (!saveBtn) return;
+  saveBtn.textContent = "Save to history";
+  saveBtn.disabled = false;
+}
+
+// ---- Show result action buttons ----
+function showResultActions() {
+  const actionsEl = document.getElementById("result-actions");
+  if (actionsEl) actionsEl.classList.remove("hidden");
 }
 
 // ---- Submit (fetch logic UNCHANGED) ----
@@ -122,8 +142,12 @@ form.addEventListener("submit", async (e) => {
   formData.append("resume", selectedFile);
   formData.append("job_description", jd);
 
+  // Reset state for fresh analysis
   AlignDashboard.hide();
+  AlignHistory.hideViewingBanner();
+  resetSaveBtn();
   setLoading(true);
+
   try {
     const response = await fetch("/api/analyze", { method: "POST", body: formData });
     const data = await response.json();
@@ -133,14 +157,57 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
+    // Store latest result
+    latestData = data;
+    latestMeta = {
+      id:        `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      fileName:  selectedFile.name,
+      jdSnippet: jd.slice(0, 80),
+      createdAt: new Date().toISOString(),
+    };
+
     AlignDashboard.render(data);
-  } catch (err) {
-    console.error("Analyze failed:", err);
+    showResultActions();
+    AlignHistory.refreshHeaderBadge();
+  } catch {
     showAlert("Could not reach the server. Please check your connection and try again.");
   } finally {
     setLoading(false);
   }
 });
+
+// ---- Result action buttons ----
+(function initResultActions() {
+  const dlBtn   = document.getElementById("download-report-btn");
+  const pdfBtn  = document.getElementById("save-pdf-btn");
+  const saveBtn = document.getElementById("save-history-btn");
+
+  if (dlBtn) {
+    dlBtn.addEventListener("click", () => {
+      if (!latestData || !latestMeta) return;
+      AlignReport.download(latestData, latestMeta);
+    });
+  }
+
+  if (pdfBtn) {
+    pdfBtn.addEventListener("click", () => window.print());
+  }
+
+  if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+      if (!latestData || !latestMeta) return;
+      if (AlignHistory.isSaved(latestMeta.id)) {
+        saveBtn.textContent = "Saved \u2713";
+        saveBtn.disabled = true;
+        return;
+      }
+      AlignHistory.save(latestData, latestMeta);
+      saveBtn.textContent = "Saved \u2713";
+      saveBtn.disabled = true;
+      AlignHistory.refreshHeaderBadge();
+    });
+  }
+})();
 
 // ================================================================
 //  VISUAL ADDITIONS (class-toggle / preference only)
@@ -189,7 +256,7 @@ form.addEventListener("submit", async (e) => {
     document.body.classList.remove("sidebar-open");
   }
 
-  function openSidebar(animate = true) {
+  function openSidebar() {
     if (isMobile()) {
       document.body.classList.add("sidebar-open");
       if (backdrop) backdrop.classList.remove("hidden");
@@ -250,4 +317,27 @@ form.addEventListener("submit", async (e) => {
     </linearGradient>
   `;
   gaugeSvg.insertBefore(defs, gaugeSvg.firstChild);
+})();
+
+// ---- Init AlignHistory ----
+AlignHistory.init();
+
+// ---- Print: open all <details> before printing, restore after ----
+(function initPrintHandlers() {
+  let detailsStates = [];
+
+  window.addEventListener("beforeprint", () => {
+    const allDetails = document.querySelectorAll("details");
+    detailsStates = Array.from(allDetails).map((d) => ({
+      el: d, wasOpen: d.open
+    }));
+    allDetails.forEach((d) => { d.open = true; });
+  });
+
+  window.addEventListener("afterprint", () => {
+    detailsStates.forEach(({ el, wasOpen }) => {
+      el.open = wasOpen;
+    });
+    detailsStates = [];
+  });
 })();
