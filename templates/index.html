@@ -3,143 +3,716 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AlignCV | Align your resume with the job you want</title>
+  <title>AlignCV | Build a Resume That Gets You Hired</title>
+  <meta name="description" content="AlignCV uses AI to analyze your resume, match it with job descriptions, and give you personalized improvement suggestions.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-  <header class="header">
-    <div class="logo">Align<span>CV</span></div>
+  <!-- ===================== HEADER ===================== -->
+  <!-- On desktop the header floats as a clay bar above the sidebar + content -->
+  <header class="header" id="site-header">
+    <div class="header-inner">
+      <!-- Logo (header version — hidden on wide screens when sidebar is open) -->
+      <a href="#" class="logo header-logo" aria-label="AlignCV home">
+        <div class="logo-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <span class="logo-text">Align<strong>CV</strong></span>
+      </a>
+
+      <!-- Nav links -->
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#hero-section" class="nav-link">Home</a>
+        
+
+      </nav>
+
+      <!-- Actions: dark mode toggle only -->
+      <div class="header-actions">
+        <button id="dark-mode-btn" class="dark-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
   </header>
 
-  <main class="container">
-    <section class="hero">
-      <h1>Align your resume with the job you want</h1>
-      <p>Upload your resume, paste a job description, and get an instant match score with AI-powered suggestions.</p>
-    </section>
+  <!-- ===================== LAYOUT ===================== -->
+  <div class="page-layout" id="page-layout">
 
-    <div id="alert" class="alert hidden" role="alert" aria-live="polite"></div>
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="site-sidebar" aria-label="Sidebar navigation">
+      <!-- Sidebar close toggle (the only new UI control) -->
+      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+        <svg id="sidebar-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
 
-    <form id="analyze-form" class="card-grid" novalidate>
-
-      <!-- Resume upload -->
-      <div class="card">
-        <h2>1. Upload Resume</h2>
-        <label id="drop-zone" class="drop-zone" for="resume-input">
-          <div class="drop-icon">📄</div>
-          <p><strong>Click to upload</strong> or drag and drop</p>
-          <small>PDF only, max 5 MB</small>
-          <input type="file" id="resume-input" accept="application/pdf,.pdf" hidden>
-        </label>
-
-        <div id="file-info" class="file-info hidden">
-          <span id="file-name"></span>
-          <button type="button" id="remove-file" aria-label="Remove file">✕</button>
+      <!-- Logo inside sidebar -->
+      <div class="sidebar-logo">
+        <div class="logo-icon small" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
         </div>
+        <span class="logo-text sidebar-logo-text">Align<strong>CV</strong></span>
       </div>
 
-      <!-- Job description -->
-      <div class="card">
-        <h2>2. Job Description</h2>
-        <textarea id="jd-input" placeholder="Paste the job description here..." maxlength="10000"></textarea>
-        <small id="char-count">0 / 10000</small>
+      <nav class="sidebar-nav" aria-label="Sidebar">
+        <a href="#hero-section" class="sidebar-item active" id="snav-home">
+  <span class="clay-icon clay-icon--lavender" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  </span>
+  <span class="sidebar-label">Home</span>
+</a>
+
+<a href="#upload-section" class="sidebar-item" id="snav-analyze">
+  <span class="clay-icon clay-icon--mint" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  </span>
+  <span class="sidebar-label">Analyze</span>
+</a>
+      </nav>
+
+      
+
+      <!-- Animated Claymorphism Leaf -->
+      <div class="sidebar-deco" aria-hidden="true">
+        <svg
+          class="clay-leaf"
+          width="120"
+          height="125"
+          viewBox="0 0 120 125"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="lavenderLeaf" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#E5D9FF"/>
+              <stop offset="55%" stop-color="#C4B5FD"/>
+              <stop offset="100%" stop-color="#A78BFA"/>
+            </linearGradient>
+
+            <linearGradient id="pinkLeaf" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FFE0F0"/>
+              <stop offset="55%" stop-color="#F9A8D4"/>
+              <stop offset="100%" stop-color="#EC91C5"/>
+            </linearGradient>
+
+            <linearGradient id="greenLeaf" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#D9F9DF"/>
+              <stop offset="55%" stop-color="#A7E8B5"/>
+              <stop offset="100%" stop-color="#78C995"/>
+            </linearGradient>
+
+            <filter id="leafClay" x="-35%" y="-35%" width="170%" height="180%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="blur"/>
+              <feOffset in="blur" dx="2" dy="3" result="shadow"/>
+              <feColorMatrix
+                in="shadow"
+                type="matrix"
+                values="0 0 0 0 0.36
+                        0 0 0 0 0.29
+                        0 0 0 0 0.50
+                        0 0 0 0.20 0"
+                result="softShadow"
+              />
+              <feMerge>
+                <feMergeNode in="softShadow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- Lavender leaf -->
+          <g class="leaf leaf-lavender" filter="url(#leafClay)">
+            <path
+              d="M59 105 C39 94 19 76 25 51 C29 34 48 18 78 12 C88 39 84 63 72 83 C67 92 62 100 59 105Z"
+              fill="url(#lavenderLeaf)"
+            />
+            <path
+              d="M59 103 C61 77 69 48 78 14"
+              stroke="#FFFFFF"
+              stroke-opacity="0.72"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M64 83 C51 75 43 65 35 53 M68 65 C76 59 80 51 82 43 M71 47 C61 43 54 36 50 29"
+              stroke="#8B74D5"
+              stroke-opacity="0.55"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </g>
+
+          <!-- Pink leaf -->
+          <g class="leaf leaf-pink" filter="url(#leafClay)">
+            <path
+              d="M56 108 C39 100 16 98 12 78 C9 61 23 46 48 40 C63 59 66 79 56 108Z"
+              fill="url(#pinkLeaf)"
+            />
+            <path
+              d="M55 105 C44 84 31 64 14 79"
+              stroke="#FFFFFF"
+              stroke-opacity="0.78"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M43 84 C43 73 43 65 46 57 M34 73 C27 72 22 74 18 78"
+              stroke="#D96DA8"
+              stroke-opacity="0.48"
+              stroke-width="1.4"
+              stroke-linecap="round"
+            />
+          </g>
+
+          <!-- Green leaf -->
+          <g class="leaf leaf-green" filter="url(#leafClay)">
+            <path
+              d="M57 108 C55 86 63 62 82 47 C94 38 105 37 112 39 C110 64 98 86 79 99 C71 104 63 107 57 108Z"
+              fill="url(#greenLeaf)"
+            />
+            <path
+              d="M59 106 C77 84 93 61 111 40"
+              stroke="#FFFFFF"
+              stroke-opacity="0.82"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M75 87 C74 75 72 67 69 62 M88 70 C88 61 86 54 82 48 M91 66 C99 66 104 65 108 61"
+              stroke="#54A875"
+              stroke-opacity="0.6"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </g>
+
+          <!-- Curved stem -->
+          <path
+            d="M57 111 C58 105 59 100 62 95"
+            stroke="#75B98A"
+            stroke-width="3"
+            stroke-linecap="round"
+          />
+        </svg>
       </div>
 
-      <button type="submit" id="analyze-btn" class="btn-primary">Analyze Resume</button>
-    </form>
-    <section id="results" class="results hidden" aria-live="polite">
-      <h2 class="results-title">Your Analysis</h2>
 
-      <div class="score-row">
-        <div class="card score-card">
-          <div class="gauge">
-            <svg viewBox="0 0 120 120" aria-hidden="true">
-              <circle class="gauge-track" cx="60" cy="60" r="54"></circle>
-              <circle id="gauge-fill" class="gauge-fill" cx="60" cy="60" r="54"></circle>
-            </svg>
-            <div class="gauge-text"><span id="score-value">0</span><small>%</small></div>
+
+    </aside>
+
+
+<!-- Sidebar-closed floating reopen button -->
+    <button class="sidebar-reopen-btn hidden" id="sidebar-reopen-btn" aria-label="Open sidebar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <!-- Mobile overlay backdrop -->
+    <div class="sidebar-backdrop hidden" id="sidebar-backdrop" aria-hidden="true"></div>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main-content" id="main-content">
+      <!-- Background blobs -->
+      <div class="bg-blob blob-1" aria-hidden="true"></div>
+      <div class="bg-blob blob-2" aria-hidden="true"></div>
+      <div class="bg-blob blob-3" aria-hidden="true"></div>
+
+      <!-- ===================== HERO ===================== -->
+      <section class="hero" id="hero-section">
+        <div class="hero-text">
+          <span class="hero-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            AI Resume Analyzer
+          </span>
+          <h1>Know How Well Your Resume <br><em>Aligns</em> With Your<em>Next Role</em></h1>
+          <p>Analyze your resume against job descriptions, measure skill compatibility, identify missing qualifications, and receive personalized AI-powered recommendations to strengthen your application.</p>
+          <div class="hero-actions">
+            <a href="#upload-section" class="btn-primary" id="hero-upload-btn">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+              Upload Resume
+            </a>
+            <a href="#upload-section" class="btn-ghost" id="how-it-works-btn">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              How It Works
+            </a>
           </div>
-          <span id="score-label" class="badge"></span>
-          <p id="score-note" class="muted"></p>
-        </div>
-
-        <div class="card stats-card">
-          <div class="stat"><strong id="stat-matched">0</strong><span>Skills matched</span></div>
-          <div class="stat"><strong id="stat-missing">0</strong><span>Skills missing</span></div>
-          <div class="stat"><strong id="stat-found">0</strong><span>Skills in your resume</span></div>
-          <div class="stat"><strong id="stat-similarity">0%</strong><span>Text similarity</span></div>
-        </div>
-      </div>
-
-      <div class="results-grid">
-        <div class="card">
-          <h3>✅ Matched skills</h3>
-          <div id="matched-skills" class="chips"></div>
-        </div>
-        <div class="card">
-          <h3>⚠️ Missing skills</h3>
-          <div id="missing-skills" class="chips"></div>
-        </div>
-
-        <div class="card">
-          <h3>💪 Strengths</h3>
-          <ul id="strengths-list" class="insight-list good"></ul>
-        </div>
-        <div class="card">
-          <h3>🛠️ Areas for improvement</h3>
-          <ul id="improvements-list" class="insight-list improve"></ul>
-        </div>
-
-        <div class="card">
-          <h3>📊 Skill coverage</h3>
-          <div class="chart-wrap"><canvas id="skills-chart"></canvas></div>
-          <p id="chart-note" class="muted hidden"></p>
-        </div>
-        <div class="card">
-          <h3>🔍 Skills in your resume</h3>
-          <p class="muted small">Green chips also appear in the job description.</p>
-          <div id="resume-skills"></div>
-        </div>
-
-        <div class="card wide">
-          <h3>📋 Resume sections detected</h3>
-          <details open><summary>🎓 Education</summary><div id="detail-education" class="detail-body"></div></details>
-          <details><summary>💼 Experience and internships</summary><div id="detail-experience" class="detail-body"></div></details>
-          <details><summary>🚀 Projects</summary><div id="detail-projects" class="detail-body"></div></details>
-          <details><summary>🏅 Certifications</summary><div id="detail-certifications" class="detail-body"></div></details>
-          </div>
-                  <div class="card wide ai-card">
-          <h3>🤖 AI suggestions</h3>
-          <p id="ai-error" class="ai-error hidden"></p>
-          <div id="ai-body" class="hidden">
-            <p id="ai-summary" class="ai-summary"></p>
-            <div class="ai-grid">
-              <div>
-                <h4>Suggested improvements</h4>
-                <ul id="ai-improvements" class="insight-list improve"></ul>
+          <div class="hero-features" id="features-row">
+            <div class="hero-feature-item">
+              <div class="feat-icon feat-icon-lavender clay-icon clay-icon--lavender clay-icon-3d" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
               </div>
-              <div>
-                <h4>Skills to work on</h4>
-                <ul id="ai-skills" class="insight-list arrow"></ul>
+              <span>ATS Friendly<br>Suggestions</span>
+            </div>
+            <div class="hero-feature-item">
+              <div class="feat-icon feat-icon-mint clay-icon clay-icon--mint clay-icon-3d" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </div>
+              <span>Skill Gap<br>Analysis</span>
+            </div>
+            <div class="hero-feature-item">
+              <div class="feat-icon feat-icon-peach clay-icon clay-icon--peach clay-icon-3d" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <span>Job Match<br>Score</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero illustration -->
+        <div class="hero-illustration" aria-hidden="true">
+          <div class="hero-blob-bg"></div>
+          <div class="hero-blob-pink"></div>
+          <div class="clay-resume-card">
+            <!-- Avatar with user icon -->
+            <div class="clay-avatar">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <!-- Name line (shorter) -->
+            <div class="clay-name-line"></div>
+            <!-- Body text lines -->
+            <div class="clay-lines">
+              <div class="clay-line long"></div>
+              <div class="clay-line medium"></div>
+              <div class="clay-line long"></div>
+              <div class="clay-line short"></div>
+              <div class="clay-line medium"></div>
+              <div class="clay-line long"></div>
+              <div class="clay-line short"></div>
+            </div>
+            <!-- AI badge top-right -->
+            <div class="clay-badge-ai">
+              <svg class="sparkle-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>AI</span>
+            </div>
+            <!-- Green check bottom-right -->
+            <div class="clay-badge-check">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <!-- Sparkle dots -->
+            <div class="sparkle s1"></div>
+            <div class="sparkle s2"></div>
+            <div class="sparkle s3"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== ALERT ===================== -->
+      <div id="alert" class="alert hidden" role="alert" aria-live="polite"></div>
+
+      <!-- ===================== UPLOAD FORM ===================== -->
+      <section class="upload-section" id="upload-section">
+        <form id="analyze-form" novalidate>
+
+         <!-- Upload card (clay version) — all ids/classes kept, so your JS still works -->
+          <div class="card upload-card">
+            <div class="upload-card-header">
+
+              <!-- 3D clay cloud with arrow -->
+              <div class="upload-icon-wrap" aria-hidden="true">
+                <svg width="120" height="100" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <!-- cloud body color -->
+                    <linearGradient id="clayCloudGrad" gradientUnits="userSpaceOnUse" x1="25" y1="12" x2="100" y2="85">
+                      <stop offset="0" stop-color="#e6dcff"/>
+                      <stop offset="0.55" stop-color="#bba8f7"/>
+                      <stop offset="1" stop-color="#9a84ee"/>
+                    </linearGradient>
+                    <!-- arrow color -->
+                    <linearGradient id="clayArrowGrad" gradientUnits="userSpaceOnUse" x1="45" y1="38" x2="75" y2="76">
+                      <stop offset="0" stop-color="#9d8aff"/>
+                      <stop offset="1" stop-color="#6a52e8"/>
+                    </linearGradient>
+                    <!-- cloud silhouette (union of circles) used to clip the inner light/shade -->
+                    <clipPath id="clayCloudClip">
+                      <circle cx="32" cy="58" r="22"/>
+                      <circle cx="58" cy="40" r="28"/>
+                      <circle cx="88" cy="58" r="22"/>
+                      <rect x="32" y="56" width="56" height="24"/>
+                    </clipPath>
+                    <!-- soft colored drop shadow under the cloud -->
+                    <filter id="clayCloudShadow" x="-20%" y="-20%" width="140%" height="150%">
+                      <feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#6a4fd0" flood-opacity="0.38"/>
+                    </filter>
+                    <filter id="clayArrowShadow" x="-30%" y="-30%" width="160%" height="170%">
+                      <feDropShadow dx="2" dy="4" stdDeviation="2.5" flood-color="#3f2aa8" flood-opacity="0.45"/>
+                    </filter>
+                    <filter id="clayBlur" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="6"/>
+                    </filter>
+                  </defs>
+
+                  <!-- cloud body + drop shadow -->
+                  <g filter="url(#clayCloudShadow)" fill="url(#clayCloudGrad)">
+                    <circle cx="32" cy="58" r="22"/>
+                    <circle cx="58" cy="40" r="28"/>
+                    <circle cx="88" cy="58" r="22"/>
+                    <rect x="32" y="56" width="56" height="24"/>
+                  </g>
+
+                  <!-- puffy inner light (top-left) and inner shade (bottom-right) -->
+                  <g clip-path="url(#clayCloudClip)">
+                    <ellipse cx="44" cy="24" rx="30" ry="14" fill="#ffffff" opacity="0.85" filter="url(#clayBlur)"/>
+                    <ellipse cx="22" cy="52" rx="10" ry="14" fill="#ffffff" opacity="0.55" filter="url(#clayBlur)"/>
+                    <ellipse cx="86" cy="86" rx="46" ry="16" fill="#5a3fc4" opacity="0.40" filter="url(#clayBlur)"/>
+                    <ellipse cx="112" cy="58" rx="8" ry="22" fill="#5a3fc4" opacity="0.25" filter="url(#clayBlur)"/>
+                  </g>
+
+                  <!-- chunky rounded arrow, raised off the cloud -->
+                  <g filter="url(#clayArrowShadow)" fill="none" stroke="url(#clayArrowGrad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="44,56 60,40 76,56"/>
+                    <line x1="60" y1="42" x2="60" y2="74"/>
+                  </g>
+                  <!-- arrow top highlight -->
+                  <g fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="46,54 60,40.5"/>
+                    <line x1="57.5" y1="46" x2="57.5" y2="70"/>
+                  </g>
+                </svg>
+              </div>
+
+              <h2>Upload Your Resume</h2>
+              <p class="upload-subtext">Drag and drop your file here, or click to browse.<br><small>Supports PDF (Max 5MB)</small></p>
+            </div>
+
+            <!-- Recessed drop zone -->
+            <label id="drop-zone" class="drop-zone" for="resume-input">
+              <input type="file" id="resume-input" name="resume" accept="application/pdf,.pdf" hidden>
+              <div class="dz-inner">
+                <!-- engraved (pressed-in) icon: same svg, styled by CSS -->
+                <svg class="dz-cloud" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+                <p><strong>Click to upload</strong> or drag &amp; drop</p>
+                <small>PDF only &mdash; max 5 MB</small>
+                <span class="choose-file-btn">Choose File</span>
+              </div>
+            </label>
+
+            <!-- Selected file pill -->
+            <div id="file-info" class="file-info hidden">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span id="file-name"></span>
+              <button type="button" id="remove-file" class="remove-btn" aria-label="Remove file">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Job description card -->
+          <div class="card jd-card">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              Job Description
+            </h2>
+            <textarea id="jd-input" name="job_description" placeholder="Paste the job description here..." maxlength="10000"></textarea>
+            <small id="char-count" class="char-count">0 / 10000</small>
+          </div>
+
+          <!-- Analyze button -->
+          <button type="submit" id="analyze-btn" class="btn-primary btn-analyze">
+            <svg class="btn-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="btn-text">Analyze Resume</span>
+            <span class="btn-spinner hidden" aria-hidden="true"></span>
+          </button>
+
+        </form>
+      </section>
+
+      <!-- ===================== RESULTS ===================== -->
+      <section id="results" class="results hidden" aria-live="polite">
+        <div class="results-header">
+          <h2 class="results-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Analysis Results
+          </h2>
+        </div>
+
+        <!-- Row 1: Score + Stat tiles -->
+        <div class="score-row">
+          <!-- Gauge card -->
+          <div class="card score-card">
+            <p class="card-label">Resume Score</p>
+            <div class="gauge">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="gauge-track" cx="60" cy="60" r="54"></circle>
+                <circle id="gauge-fill" class="gauge-fill" cx="60" cy="60" r="54"></circle>
+              </svg>
+              <div class="gauge-text">
+                <span id="score-value">0</span>
+                <small>/100</small>
               </div>
             </div>
-            <h4>Stronger bullet points</h4>
-            <div id="ai-bullets"></div>
-            <h4>Keywords to include</h4>
-            <div id="ai-keywords" class="chips"></div>
+            <span id="score-label" class="badge"></span>
+            <p id="score-note" class="muted"></p>
           </div>
-          <p class="muted small">AI-generated suggestions. Review them and only include what is true for you.</p>
-        </div>
-        </div>
-      </div>
-    </section>
-  </main>
 
-  <footer class="footer">AlignCV · Built by Mouli Biswas . 2026</footer>
+          <!-- Stats grid (4 colored tile cards) -->
+          <div class="card stats-card">
+            <div class="stat stat-lavender">
+              <div class="stat-icon-tile tile-lavender clay-icon clay-icon--lavender clay-icon-3d"
+     aria-hidden="true">
+  <svg width="17" height="17" viewBox="0 0 24 24"
+       fill="none" stroke="currentColor" stroke-width="2.2"
+       stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+</div>
+              <strong id="stat-matched">0</strong>
+              <span>Skills matched</span>
+            </div>
+            
+<div class="stat stat-peach">
+  <div class="stat-icon-tile tile-peach clay-icon clay-icon--coral clay-icon-3d"
+       aria-hidden="true">
+    <svg width="17" height="17" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="15" y1="9" x2="9" y2="15"/>
+      <line x1="9" y1="9" x2="15" y2="15"/>
+    </svg>
+  </div>
+  <strong id="stat-missing">0</strong>
+  <span>Skills missing</span>
+</div>
 
-   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+            <div class="stat stat-mint">
+              <div class="stat-icon-tile tile-mint clay-icon clay-icon--mint clay-icon-3d" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <strong id="stat-found">0</strong>
+              <span>Skills in resume</span>
+            </div>
+            <div class="stat stat-pink">
+              <div class="stat-icon-tile tile-pink clay-icon clay-icon--pink clay-icon-3d" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </div>
+              <strong id="stat-similarity">0%</strong>
+              <span>Text similarity</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results grid -->
+        <div class="results-grid">
+
+          <!-- Row 2: Matched & Missing Skills -->
+          <div class="card card-mint">
+            <h3>
+              <div class="card-icon-tile icon-mint clay-icon clay-icon--mint clay-icon-3d" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              Matched Skills
+            </h3>
+            <div id="matched-skills" class="chips"></div>
+          </div>
+
+          <div class="card card-peach">
+            <h3>
+              <div class="card-icon-tile icon-peach clay-icon clay-icon--coral clay-icon-3d" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              Missing Skills
+            </h3>
+            <div id="missing-skills" class="chips"></div>
+          </div>
+
+          <!-- Row 3: Strengths & Improvements -->
+          <div class="card card-mint-light">
+            <h3>
+              <div class="card-icon-tile icon-mint clay-icon clay-icon--mint clay-icon-3d" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+              </div>
+              Strengths
+            </h3>
+            <ul id="strengths-list" class="insight-list good"></ul>
+          </div>
+
+          <div class="card card-peach-light">
+            <h3>
+              <div class="card-icon-tile icon-peach clay-icon clay-icon--coral clay-icon-3d" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              Areas for Improvement
+            </h3>
+            <ul id="improvements-list" class="insight-list improve"></ul>
+          </div>
+
+          <!-- Row 4: Chart & Resume Skills -->
+
+<!-- Skill Coverage Card -->
+<div class="card skill-coverage-card">
+    <h3>
+        <div class="card-icon-tile icon-lavender clay-icon clay-icon--lavender clay-icon-3d"
+             aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
+                <path d="M22 12A10 10 0 0 0 12 2V12Z"/>
+            </svg>
+        </div>
+        Skill Coverage
+    </h3>
+
+    <div class="coverage-visual">
+        <div class="coverage-doughnut">
+            <canvas id="skills-chart"></canvas>
+
+            <div class="coverage-center">
+                <span id="coverage-percentage">0%</span>
+                <span class="coverage-center-label">Overall Match</span>
+            </div>
+        </div>
+
+        <div class="coverage-legend">
+            <div class="coverage-legend-item">
+                <span class="coverage-dot matched-dot"></span>
+                <div>
+                    <span class="coverage-legend-label">Matched</span>
+                    <span id="coverage-matched-percent" class="coverage-legend-percent">0%</span>
+                </div>
+            </div>
+
+            <div class="coverage-legend-item">
+                <span class="coverage-dot missing-dot"></span>
+                <div>
+                    <span class="coverage-legend-label">Missing</span>
+                    <span id="coverage-missing-percent" class="coverage-legend-percent">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p id="chart-note" class="muted hidden"></p>
+</div>
+
+          <div class="card">
+            <h3>
+              <div class="card-icon-tile icon-blue clay-icon clay-icon--blue clay-icon-3d" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              Skills in Your Resume
+            </h3>
+            <p class="muted small">Green chips also appear in the job description.</p>
+            <div id="resume-skills"></div>
+          </div>
+
+          <!-- Row 5: Sections (full width) -->
+          <div class="card wide">
+            <h3>
+              <div class="card-icon-tile icon-lavender clay-icon-3d" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              Resume Sections Detected
+            </h3>
+            <details open>
+              <summary>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                Education
+              </summary>
+              <div id="detail-education" class="detail-body"></div>
+            </details>
+            <details>
+              <summary>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                Experience &amp; Internships
+              </summary>
+              <div id="detail-experience" class="detail-body"></div>
+            </details>
+            <details>
+              <summary>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Projects
+              </summary>
+              <div id="detail-projects" class="detail-body"></div>
+            </details>
+            <details>
+              <summary>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+                Certifications
+              </summary>
+              <div id="detail-certifications" class="detail-body"></div>
+            </details>
+          </div>
+
+          <!-- AI Suggestions (full width) -->
+          <div class="card wide ai-card">
+            <h3>
+              <div class="card-icon-tile icon-lavender clay-icon-3d" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+              </div>
+              AI Suggestions
+            </h3>
+            <p id="ai-error" class="ai-error hidden"></p>
+            <div id="ai-body" class="hidden">
+              <p id="ai-summary" class="ai-summary"></p>
+              <div class="ai-grid">
+                <div>
+                  <h4>Suggested Improvements</h4>
+                  <ul id="ai-improvements" class="insight-list improve"></ul>
+                </div>
+                <div>
+                  <h4>Skills to Work On</h4>
+                  <ul id="ai-skills" class="insight-list arrow"></ul>
+                </div>
+              </div>
+              <h4>Stronger Bullet Points</h4>
+              <div id="ai-bullets"></div>
+              <h4>Keywords to Include</h4>
+              <div id="ai-keywords" class="chips"></div>
+            </div>
+            <p class="muted small">AI-generated suggestions. Review them and only include what is true for you.</p>
+            <div class="ai-footer">
+              <button type="button" class="btn-secondary btn-report" id="view-report-btn">
+                View Detailed Report
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /results-grid -->
+      </section>
+
+      <footer class="footer" id="site-footer">
+        <p>AlignCV &middot; Built by Mouli Biswas &middot; 2026</p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>

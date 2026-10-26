@@ -65,38 +65,119 @@ const AlignDashboard = (() => {
   }
 
   // ---------- Chart ----------
-  function renderChart(matchedCount, missingCount) {
+  
+// ---------- Skill Coverage Doughnut Chart ----------
+function renderChart(matchedCount, missingCount, overallScore) {
     const canvas = $("skills-chart");
     const note = $("chart-note");
-    if (chart) chart.destroy();
+    const visual = canvas.closest(".coverage-visual");
 
-    const hasData = matchedCount + missingCount > 0;
-    canvas.parentElement.classList.toggle("hidden", !hasData);
-    note.classList.toggle("hidden", hasData);
-    if (!hasData) {
-      note.textContent = "No job description skills to chart.";
-      return;
+    if (chart) {
+        chart.destroy();
+        chart = null;
     }
-    if (typeof Chart === "undefined") return; // Chart.js failed to load
+
+    const total = matchedCount + missingCount;
+    const hasData = total > 0;
+
+    visual.classList.toggle("hidden", !hasData);
+    note.classList.toggle("hidden", hasData);
+
+    if (!hasData) {
+        note.textContent = "No job description skills to chart.";
+        return;
+    }
+
+    if (typeof Chart === "undefined") {
+        note.textContent = "The chart library could not be loaded.";
+        note.classList.remove("hidden");
+        visual.classList.add("hidden");
+        return;
+    }
+
+    const matchedPercent = Math.round((matchedCount / total) * 100);
+    const missingPercent = 100 - matchedPercent;
+
+    $("coverage-percentage").textContent =
+        `${Math.round(overallScore)}%`;
+
+    $("coverage-matched-percent").textContent =
+        `${matchedPercent}%`;
+
+    $("coverage-missing-percent").textContent =
+        `${missingPercent}%`;
 
     chart = new Chart(canvas, {
-      type: "doughnut",
-      data: {
-        labels: ["Matched", "Missing"],
-        datasets: [{
-          data: [matchedCount, missingCount],
-          backgroundColor: [COLORS.Strong, COLORS.Low],
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "68%",
-        plugins: { legend: { position: "bottom" } },
-      },
+        type: "doughnut",
+
+        data: {
+            labels: ["Matched", "Missing"],
+
+            datasets: [{
+                data: [matchedCount, missingCount],
+
+                backgroundColor: [
+                    "#72DDB5",
+                    "#F49AC2"
+                ],
+
+                hoverBackgroundColor: [
+                    "#8BE8C7",
+                    "#FFB0D0"
+                ],
+
+                borderColor: [
+                    "#C4F7E4",
+                    "#FFD8E8"
+                ],
+
+                borderWidth: 3,
+                hoverOffset: 7,
+                spacing: 2,
+                borderRadius: 12
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "64%",
+
+            animation: {
+                animateRotate: true,
+                animateScale: true,
+                duration: 1000
+            },
+
+            plugins: {
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+                    backgroundColor: "#f8f2ff",
+                    titleColor: "#51448f",
+                    bodyColor: "#51448f",
+                    borderColor: "#ded2ff",
+                    borderWidth: 1,
+                    padding: 12,
+
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const percentage = Math.round(
+                                (value / total) * 100
+                            );
+
+                            return ` ${context.label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
     });
-  }
+}
+
 
   // ---------- Skills found in the resume ----------
   function renderResumeSkills(skills, matchedSet) {
@@ -221,7 +302,11 @@ const AlignDashboard = (() => {
     renderResumeSkills(info.skills, matchedSet);
     renderSections(info);
     renderAI(ai, aiError);
-    renderChart(match.skills.matched.length, match.skills.missing.length);
+    renderChart(
+    match.skills.matched.length,
+    match.skills.missing.length,
+    match.score
+);
 
     const results = $("results");
     results.classList.remove("hidden");

@@ -55,6 +55,7 @@ def analyze():
     )
 
 
+
 @app.errorhandler(AppError)
 def handle_app_error(err):
     return jsonify(success=False, error=err.message), err.status_code
