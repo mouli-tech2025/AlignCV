@@ -404,9 +404,14 @@ body.sidebar-closed .main-content {
   white-space: nowrap;
 }
 .sidebar-item:hover {
-  background: var(--lavender-bg); color: var(--primary);
-  transform: translateX(3px);
+  background: var(--surface-2);
+  color: var(--primary);
+  box-shadow:
+    inset 2px 2px 5px rgba(80, 60, 130, 0.08),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.08);
+  transform: none;
 }
+
 .sidebar-item.active {
   background: linear-gradient(135deg, var(--primary), #9567f4);
   color: #fff;
@@ -1484,15 +1489,23 @@ body {
 }
 
 /* ACTIVE: raised purple clay button */
+/* ACTIVE: soft, realistic purple clay button */
 .sidebar-item.active {
-  background: linear-gradient(145deg, #9372f0 0%, #7a55dc 55%, #6540c4 100%);
+  background: linear-gradient(145deg, #8568dc 0%, #7454ce 55%, #6546b5 100%);
   color: #fff;
-  box-shadow: var(--clay-purple);
-  text-shadow: 0 1px 2px rgba(40, 15, 120, 0.35);
+  box-shadow:
+    4px 6px 12px rgba(76, 52, 145, 0.24),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.12),
+    inset -2px -2px 4px rgba(45, 27, 100, 0.16);
+  text-shadow: none;
 }
+
 .sidebar-item.active:hover {
   transform: translateY(-1px);
-  box-shadow: var(--clay-purple-hover);
+  box-shadow:
+    5px 8px 14px rgba(76, 52, 145, 0.28),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.14),
+    inset -2px -2px 4px rgba(45, 27, 100, 0.18);
 }
 
 .sidebar-logo { border-bottom: 2px solid var(--surface-2); }
@@ -3244,3 +3257,13 @@ body.dark .history-viewing-banner {
   /* Hide gauge SVG animation artifacts */
   .gauge svg { display: none; }
 }
+
+
+
+
+
+
+
+
+
+
