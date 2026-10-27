@@ -13,7 +13,7 @@ AlignCV compares a PDF resume with a job description, calculates a match score, 
 
 | Home | Analysis dashboard |
 | :---: | :---: |
-| ![Home](/Users/moulibiswas/Desktop/Home.png) | ![Ananlyze](/Users/moulibiswas/Desktop/analyze.png) |
+| ![Home](screenshots/Home.png) | ![Ananlyze](screenshots/analyze.png) |
 
 ---
 
