@@ -13,7 +13,7 @@ AlignCV compares a PDF resume with a job description, calculates a match score, 
 
 | Home | Analysis dashboard |
 | :---: | :---: |
-| ![Home](screenshots/home.png) | ![Dashboard](screenshots/dashboard.png) |
+| ![Home](/Users/moulibiswas/Desktop/Home.png) | ![Ananlyze](/Users/moulibiswas/Desktop/analyze.png) |
 
 ---
 
@@ -286,11 +286,7 @@ python3 -m pytest -v
 
 Deployed on Render as a Web Service with build command `pip install -r requirements.txt` and start command `gunicorn app:app`. `GEMINI_API_KEY` is set in Render's environment settings.
 
-## Limitations
 
-- Text-based PDFs only (no OCR for scans).
-- English only, and only skills listed in `data/skills.json` are detected.
-- Matching uses keywords and TF-IDF, so it does not understand meaning.
 
 
 ## Author
