@@ -68,7 +68,7 @@ EMAIL_PATTERN = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
 PHONE_PATTERN = re.compile(r"\+?\d[\d\s\-()]{8,16}\d")
 
 
-# ---------- Helpers ----------
+#Helpers
 def _is_bullet(line: str) -> bool:
     return len(line) > 1 and line[0] in BULLET_CHARS
 
@@ -115,7 +115,7 @@ def _match_header(line: str) -> str | None:
     return _HEADER_LOOKUP.get(normalised)
 
 
-# ---------- Section splitting ----------
+#Section splitting
 def split_sections(text: str) -> dict[str, list[str]]:
     """Split resume text into sections keyed by name (education, projects, ...).
 
@@ -132,7 +132,7 @@ def split_sections(text: str) -> dict[str, list[str]]:
     return dict(sections)
 
 
-# ---------- Individual extractors ----------
+#Individual extractors
 def extract_education(lines: list[str], full_text: str) -> dict:
     source = "\n".join(lines) if lines else full_text
 
@@ -232,7 +232,7 @@ def detect_contact_info(text: str) -> dict:
     }
 
 
-# ---------- Main entry point ----------
+#Main entry point
 def extract_resume_info(text: str) -> dict:
     """Extract skills, sections and contact flags from cleaned resume text."""
     sections = split_sections(text)

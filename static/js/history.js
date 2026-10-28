@@ -1,21 +1,19 @@
-// ================================================================
-//  AlignCV – history.js
-//  IIFE module: AlignHistory
+
 //  Stores analysis entries in localStorage; renders history drawer.
-// ================================================================
+
 
 const AlignHistory = (() => {
   const STORAGE_KEY = "aligncv_history";
   const MAX_ENTRIES = 10;
 
-  // ---------- Score color mapping (mirrors dashboard.js) ----------
+  //Score color mapping (mirrors dashboard.js)
   const SCORE_COLORS = {
     Strong:   { bg: "var(--mint-bg)",    text: "var(--mint-deep)" },
     Moderate: { bg: "var(--yellow-bg)",  text: "var(--yellow)"    },
     Low:      { bg: "var(--peach-bg)",   text: "var(--peach-deep)"},
   };
 
-  // ---------- Safe make() helper (textContent only) ----------
+  //Safe make() helper (textContent only)
   function make(tag, className, text) {
     const el = document.createElement(tag);
     if (className) el.className = className;
@@ -23,7 +21,7 @@ const AlignHistory = (() => {
     return el;
   }
 
-  // ---------- localStorage helpers ----------
+  //localStorage helpers
   function readAll() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -48,7 +46,7 @@ const AlignHistory = (() => {
     if (banner) banner.classList.remove("hidden");
   }
 
-  // ---------- Public data API ----------
+  //Public data API
   function save(data, meta) {
     const entries = readAll();
 
@@ -99,9 +97,9 @@ const AlignHistory = (() => {
     return readAll().length;
   }
 
-  // ================================================================
-  //  UI – History Drawer
-  // ================================================================
+ 
+  //UI – History Drawer
+
 
   // State
   let drawerOpen  = false;
@@ -114,7 +112,7 @@ const AlignHistory = (() => {
   let countBadge  = null;
   let historyBtn  = null;
 
-  // ---------- Build drawer DOM (once) ----------
+  //Build drawer DOM(once)
   function buildDrawer() {
     // Overlay
     overlay = make("div", "history-overlay hidden");
@@ -187,7 +185,9 @@ const AlignHistory = (() => {
     });
   }
 
-  // ---------- Render list ----------
+
+
+  //Render list
   function refreshList() {
     if (!listEl) return;
     listEl.replaceChildren();
@@ -209,7 +209,7 @@ const AlignHistory = (() => {
     });
   }
 
-  // ---------- Build one entry card ----------
+  //Build one entry card
   function buildEntryCard(entry) {
     const card = make("div", "history-card");
     card.dataset.id = entry.id;
@@ -273,7 +273,9 @@ const AlignHistory = (() => {
     return card;
   }
 
-  // ---------- View a history entry ----------
+
+
+  //View a history entry
   function viewEntry(entry) {
     closeDrawer();
     AlignDashboard.render(entry.data);
@@ -286,8 +288,10 @@ const AlignHistory = (() => {
       saveBtn.disabled = true;
     }
   }
+  
 
-  // ---------- "Viewing saved analysis" banner ----------
+
+  //"Viewing saved analysis" banner
   function showViewingBanner(entry) {
     let banner = document.getElementById("history-viewing-banner");
     if (!banner) {
@@ -338,7 +342,9 @@ const AlignHistory = (() => {
     if (banner) banner.classList.add("hidden");
   }
 
-  // ---------- Open / close drawer ----------
+
+
+  //Open / close drawer
   function openDrawer() {
     if (!drawer) buildDrawer();
     refreshList();
@@ -361,14 +367,18 @@ const AlignHistory = (() => {
     if (prevFocus) prevFocus.focus();
   }
 
-  // ---------- Refresh the "History (n)" badge ----------
+
+
+  //Refresh the "History (n)" badge
   function refreshHeaderBadge() {
     if (!historyBtn) return;
     const n = count();
     historyBtn.textContent = `History (${n})`;
   }
 
-  // ---------- Init (called once by main.js after DOM ready) ----------
+
+
+  //Init (called once by main.js after DOM ready)
   function init() {
     historyBtn = document.getElementById("history-open-btn");
     if (historyBtn) {

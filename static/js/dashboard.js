@@ -12,7 +12,7 @@ const AlignDashboard = (() => {
   const $ = (id) => document.getElementById(id);
   let chart = null;
 
-  // ---------- Safe DOM helpers (textContent only, never innerHTML) ----------
+  //Safe DOM helpers (textContent only, never innerHTML)
   function make(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -39,7 +39,7 @@ const AlignDashboard = (() => {
     container.replaceChildren(...items.map((text) => make("li", "", text)));
   }
 
-  // ---------- Score gauge ----------
+  //Score gauge
   function animateScore(score, label) {
     const fill = $("gauge-fill");
     const value = $("score-value");
@@ -64,9 +64,9 @@ const AlignDashboard = (() => {
     requestAnimationFrame(tick);
   }
 
-  // ---------- Chart ----------
+  //Chart
   
-// ---------- Skill Coverage Doughnut Chart ----------
+//Skill Coverage Doughnut Chart
 function renderChart(matchedCount, missingCount, overallScore) {
     const canvas = $("skills-chart");
     const note = $("chart-note");
@@ -179,7 +179,7 @@ function renderChart(matchedCount, missingCount, overallScore) {
 }
 
 
-  // ---------- Skills found in the resume ----------
+  //Skills found in the resume
   function renderResumeSkills(skills, matchedSet) {
     const box = $("resume-skills");
     box.replaceChildren();
@@ -203,7 +203,7 @@ function renderChart(matchedCount, missingCount, overallScore) {
     });
   }
 
-  // ---------- Resume sections ----------
+  //Resume sections
   function renderSections(info) {
     const { education, experience, projects, certifications } = info;
 
@@ -242,7 +242,7 @@ function renderChart(matchedCount, missingCount, overallScore) {
     );
   }
 
-    // ---------- AI suggestions ----------
+    //AI suggestions
   function renderAI(ai, aiError) {
     const errorBox = $("ai-error");
     const body = $("ai-body");
@@ -277,7 +277,7 @@ function renderChart(matchedCount, missingCount, overallScore) {
     renderChips($("ai-keywords"), ai.keywords_to_include, "", "No extra keywords suggested.");
   }
 
-  // ---------- Public API ----------
+  //Public API
     function render(data) {
     const { match, info, insights, ai, ai_error: aiError } = data;
     const matchedSet = new Set(match.skills.matched.map((s) => s.toLowerCase()));

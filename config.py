@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv()  # reads the .env file so os.getenv() can see your settings
+load_dotenv()  # reads the .env file so os.getenv() can see settings
 MAX_UPLOAD_MB = 5
 MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 

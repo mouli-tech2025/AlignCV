@@ -9,7 +9,7 @@ AlignCV compares a PDF resume with a job description, calculates a match score, 
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-TF--IDF-F7931E?style=flat&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 [![Gemini API](https://img.shields.io/badge/Google-Gemini_API-4285F4?style=flat&logo=google&logoColor=white)](https://ai.google.dev/)
 
-**Live demo:** <add Render link here>
+**Live demo:** <https://aligncv-nv94.onrender.com>
 
 | Home | Analysis dashboard |
 | :---: | :---: |

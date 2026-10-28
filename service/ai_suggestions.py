@@ -76,7 +76,7 @@ Give 3 to 4 rewritten_bullets. Only pick lines that really appear in the resume.
 </job_description>"""
 
 
-# ---------- Parsing and cleaning the model's answer ----------
+#Parsing and cleaning the model's answer 
 
 def _parse_json(raw: str | None) -> dict:
     text = (raw or "").strip()
@@ -170,7 +170,7 @@ def normalise_suggestions(raw: dict) -> dict:
     return result
 
 
-# ---------- Calling the API ----------
+#Calling the API
 
 def _message_for_status(code: int | None) -> str:
     if code in RETRYABLE_CODES:

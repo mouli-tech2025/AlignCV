@@ -56,7 +56,8 @@ def calculate_match(
     skills = compare_skills(resume_skills, jd_skills)
 
     if skills["ratio"] is None:
-        # The JD has no recognisable skills, so rely on text similarity alone
+    
+    # The JD has no recognisable skills, so rely on text similarity alone
         final = similarity_part
     else:
         final = SKILL_MATCH_WEIGHT * skills["ratio"] + TFIDF_WEIGHT * similarity_part

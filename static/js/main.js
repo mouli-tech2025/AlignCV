@@ -1,15 +1,6 @@
-// ================================================================
-//  AlignCV – main.js
-//  All fetch / validation / form logic preserved exactly.
-//  Additions:
-//    – Tracks latest result + meta for report/history buttons
-//    – Wires up Download report, Save to history, Save as PDF buttons
-//    – Dark mode toggle
-//    – Loading spinner class toggle
-//    – Sidebar open/close toggle
-//    – Sidebar active nav state
-//    – SVG gradient injection for gauge ring
-// ================================================================
+
+//All fetch / validation / form logic preserved exactly.
+
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const MIN_JD_LENGTH = 50;
@@ -30,6 +21,8 @@ let selectedFile = null;
 // Latest analysis state (kept in memory, not persisted)
 let latestData = null;
 let latestMeta = null;
+
+
 
 // ---- Alerts ----
 function showAlert(message) {
@@ -209,9 +202,12 @@ form.addEventListener("submit", async (e) => {
   }
 })();
 
-// ================================================================
+
+
+
+
 //  VISUAL ADDITIONS (class-toggle / preference only)
-// ================================================================
+
 
 // ---- Dark Mode ----
 (function initDarkMode() {

@@ -1,8 +1,6 @@
-// ================================================================
-//  AlignCV – report.js
-//  IIFE module: AlignReport
+
 //  Builds and downloads a plain-text analysis report.
-// ================================================================
+
 
 const AlignReport = (() => {
 
